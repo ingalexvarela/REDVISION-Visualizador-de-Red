@@ -448,7 +448,27 @@
     /* ================= MAPA ================= */
     const map = new maplibregl.Map({
         container: 'map',
-        style: 'https://tiles.stadiamaps.com/styles/osm_bright.json',
+        style: {
+            version: 8,
+            glyphs: "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
+            sources: {
+                'osm-tiles': {
+                    type: 'raster',
+                    tiles: [
+                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+                    ],
+                    tileSize: 256,
+                    attribution: '© OpenStreetMap contributors'
+                }
+            },
+            layers: [
+                {
+                    id: 'osm-base',
+                    type: 'raster',
+                    source: 'osm-tiles'
+                }
+            ]
+        },
         center: CENTER,
         zoom: 11.5
     });
@@ -506,6 +526,23 @@
 
     /* ================= LOAD ================= */
     map.on('load', () => {
+        /*
+        // ================= OSM BASE =================
+        map.addSource('osm-raster', {
+            type: 'raster',
+            tiles: [
+                'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+            ],
+            tileSize: 256,
+            attribution: '© OpenStreetMap contributors'
+        });
+
+        map.addLayer({
+            id: 'osm-layer',
+            type: 'raster',
+            source: 'osm-raster'
+        }); // 👈 SIN segundo parámetro porque aún no hay capas
+        */
         const size = 32;
         const canvas = document.createElement('canvas');
         canvas.width = size;
@@ -589,6 +626,7 @@
             }
         }, 'mapillary-sequences');
 
+        
         /* ===============================
         GEOJSON
         =============================== */
@@ -746,27 +784,33 @@
         });
     
         map.addLayer({
-            id: 'avance-labels',
-            type: 'symbol',
-            source: 'avance',
-            layout: {
-                visibility: 'none'
-            },
-            layout: {
-                'text-field': [
-                    'concat',
-                    '📅 ',
-                    ['slice', ['get', 'fecha_fin'], 0, 10]
-                ],
-                'text-size': 11,
-                'text-anchor': 'center',
-                'text-offset': [0, 0]
-            },
-            paint: {
-                'text-color': '#000000',
-                'text-halo-color': '#ffffff',
-                'text-halo-width': 1.5
-            }
+                id: 'avance-labels',
+                type: 'symbol',
+                source: 'avance',
+                layout: {
+                    visibility: 'none',
+                    'text-field': [
+                        'concat',
+                        '📅 ',
+                        [
+                            'slice',
+                            [
+                                'coalesce',
+                                ['to-string', ['get', 'fecha_fin']],
+                                ''
+                            ],
+                            0,
+                            10
+                        ]
+                    ],
+                    'text-size': 11,
+                    'text-anchor': 'center'
+                },
+                paint: {
+                    'text-color': '#000000',
+                    'text-halo-color': '#ffffff',
+                    'text-halo-width': 1.5
+                }
         });
 
         /*AREA CIRCUITOS / TODOS LOS CIRCUITOS */
