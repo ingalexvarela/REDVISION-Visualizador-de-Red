@@ -360,6 +360,24 @@
         filter: drop-shadow(0 4px 10px rgba(0,0,0,0.4));
         transition: 0.3s;
     }
+
+    .map-base-toggle {
+        display: flex;
+        gap: 4px;
+        margin-top: 6px;
+    }
+
+    .map-base-toggle button {
+        flex: 1;
+    }
+
+    #lbl-basemap {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        font-size: 11px;
+    }
 </style>
 
 </head>
@@ -413,7 +431,10 @@
                     <div class="capas-grid">
                         <label><input type="checkbox" id="chk-lineas"> Líneas</label>
                         <label><input type="checkbox" id="chk-postes"> Postes</label>
-                        <label><input type="checkbox" id="chk-satelite"> Satélite</label>
+                        <label id="lbl-basemap">
+                            <input type="checkbox" id="chk-satelite">
+                            <span id="txt-basemap">🌍 OSM</span>
+                        </label>
                         <label><input type="checkbox" id="chk-limites" checked> Límites</label>
                     </div>
                 <button id="btn-labels" class="btn-mini">Etiquetas Postes</button>
@@ -526,23 +547,6 @@
 
     /* ================= LOAD ================= */
     map.on('load', () => {
-        /*
-        // ================= OSM BASE =================
-        map.addSource('osm-raster', {
-            type: 'raster',
-            tiles: [
-                'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
-            ],
-            tileSize: 256,
-            attribution: '© OpenStreetMap contributors'
-        });
-
-        map.addLayer({
-            id: 'osm-layer',
-            type: 'raster',
-            source: 'osm-raster'
-        }); // 👈 SIN segundo parámetro porque aún no hay capas
-        */
         const size = 32;
         const canvas = document.createElement('canvas');
         canvas.width = size;
@@ -560,7 +564,7 @@
             ctx.lineTo(i + size, 0);
             ctx.stroke();
         }
-        // convertir a ImageData
+
         const imageData = ctx.getImageData(0, 0, size, size);
 
         map.addLayer({
@@ -871,6 +875,37 @@
         function toggle(id, chk) {
             map.setLayoutProperty(id, 'visibility', chk ? 'visible' : 'none');
         }
+        toggleBasemapCheckbox(false); // inicia en OSM
+        function setBasemap(type) {
+            const btnOSM = document.getElementById('btn-osm');
+            const btnSAT = document.getElementById('btn-sat');
+
+            if (type === 'osm') {
+                map.setLayoutProperty('osm-base', 'visibility', 'visible');
+                map.setLayoutProperty('google-satelite-layer', 'visibility', 'none');
+
+                btnOSM.classList.add('btn-active');
+                btnSAT.classList.remove('btn-active');
+            } else {
+                map.setLayoutProperty('osm-base', 'visibility', 'none');
+                map.setLayoutProperty('google-satelite-layer', 'visibility', 'visible');
+
+                btnSAT.classList.add('btn-active');
+                btnOSM.classList.remove('btn-active');
+            }
+        }
+        function toggleBasemapCheckbox(checked) {
+            const txt = document.getElementById('txt-basemap');
+            if (checked) {
+                map.setLayoutProperty('osm-base', 'visibility', 'none');
+                map.setLayoutProperty('google-satelite-layer', 'visibility', 'visible');
+                txt.innerText = 'Satélite';
+            } else {
+                map.setLayoutProperty('osm-base', 'visibility', 'visible');
+                map.setLayoutProperty('google-satelite-layer', 'visibility', 'none');
+                txt.innerText = 'Satélite';
+            }
+        }
         function chk(cb, layer) {
             document.getElementById(cb).onchange = e => toggle(layer, e.target.checked);
         }
@@ -915,7 +950,10 @@
         chk('chk-lineas', 'lineas-layer');
         chk('chk-postes', 'postes-layer');
         chk('chk-limites', 'limites-layer');
-        chk('chk-satelite', 'google-satelite-layer');
+        
+        document.getElementById('chk-satelite').onchange = (e) => {
+            toggleBasemapCheckbox(e.target.checked);
+        };
 
         document.getElementById('chk-sombra').onchange = e => {
             const visible = e.target.checked;
@@ -1233,8 +1271,8 @@ document.querySelector('.panel-titleG').addEventListener('click', function() {
     function viewerCompacto() {
         if (userResizing) return;
         viewerWidthPercent = 25;
-        mapDiv.style.width = '75%';
-        viewerDiv.style.width = '25%';
+        mapDiv.style.width = '80%';
+        viewerDiv.style.width = '20%';
         setTimeout(() => {
             viewer.resize();
         }, 350);
