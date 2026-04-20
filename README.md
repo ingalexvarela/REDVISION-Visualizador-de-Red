@@ -63,7 +63,7 @@ Filtros disponibles:
 - **Off**: Apagar las capas de las imagenes 360°
 
 ## Contacto
-- Ing. Alex Varela
-- ing.alexvarela@gmail.com
+- Ing. Alex Varela ing.alexvarela@gmail.com
+- Ing. Javier Soto jsoto@coopealfaroruiz.com
 
 ![Demo](https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExZmM0aTkyZ3JjZGFpdG1nbXI4dmkyOHBxZXNodTRyMDA0enZ3aHY3biZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/bGgsc5mWoryfgKBx1u/giphy.gif)
