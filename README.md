@@ -1,4 +1,4 @@
-# 🌐 REDVISION – Visualizador de Red Eléctrica
+# 🌐🗺️📸 REDVISION – Visualizador de Red Eléctrica
 
 Plataforma web interactiva para la **visualización, monitoreo y digitalización de redes eléctricas**, integrando cartografía, avance de levantamientos SIG y mapeo 360°.
 
@@ -7,7 +7,7 @@ Plataforma web interactiva para la **visualización, monitoreo y digitalización
 
 ---
 
-## 🚀 Descripción
+## Descripción
 
 **REDVISION** es una aplicación web desarrollada que permite visualizar:
 
@@ -19,7 +19,7 @@ Plataforma web interactiva para la **visualización, monitoreo y digitalización
 
 ---
 
-## 🧩 Funcionalidades principales
+## Funcionalidades principales
 
 ### 📊 1. Panel de control
 - Visualización de **porcentaje de avance en la digitalización de la red por circuito**
